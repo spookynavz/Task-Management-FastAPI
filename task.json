@@ -1,0 +1,13 @@
+{
+    "tasks": [
+      {
+        "person": "Alice",
+        "task": "Complete project report"
+      },
+      {
+        "person": "Bob",
+        "task": "Update website content"
+      }
+    ]
+  }
+  
