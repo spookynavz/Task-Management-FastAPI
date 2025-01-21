@@ -1,4 +1,1 @@
-Python 3.12.1
-typing
-fastapi
-json
+fastapi==0.115.6
