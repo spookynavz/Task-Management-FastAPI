@@ -1,0 +1,4 @@
+Python 3.12.1
+typing
+fastapi
+json
