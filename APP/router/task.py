@@ -1,6 +1,4 @@
 from typing import Union
-from APP.routers.task import router as task_router
-#from APP.schemas.models import 
 from fastapi import FastAPI
 import json
 
@@ -11,4 +9,3 @@ def get_task():
     with open("task.json","r") as file:
         task_data = json.load(file)
     return task_data
-
