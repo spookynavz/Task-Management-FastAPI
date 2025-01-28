@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text
+from sqlalchemy.orm import relationship, sessionmaker
+#from sqlalchemy.ext.declarative import declarative_base
+from database import Base
 from datetime import date
 
-Base = declarative_base()
+
+#Base = declarative_base()
 
 # User Model
 class User(Base):
@@ -30,3 +32,4 @@ class Task(Base):
     # Relationships
     assigned_by = relationship("User", foreign_keys=[assigned_by_id], back_populates="tasks_assigned")
     assigned_to = relationship("User", foreign_keys=[assigned_to_id], back_populates="tasks_received")
+

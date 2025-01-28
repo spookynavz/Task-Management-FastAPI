@@ -7,9 +7,3 @@ class UserBase(BaseModel):
     email: str
 
 
-# Schema for Task
-class TaskBase(BaseModel):
-    title: str
-    description: Optional[str]
-
-
