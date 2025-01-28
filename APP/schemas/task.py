@@ -2,6 +2,6 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 # Schema for Task
-class TaskBase(BaseModel):
+class Task(BaseModel):
     title: str
     description: Optional[str]
