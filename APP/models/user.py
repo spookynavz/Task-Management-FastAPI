@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, sessionmaker
-from database import Base
+from app.database import Base
 from datetime import date
 
 # User Model
