@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship, sessionmaker
 from app.database import Base
 from datetime import date
@@ -7,8 +7,10 @@ from datetime import date
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(str)
-    email = Column(str, unique=True, index=True)
+    name = Column(String)
+    email = Column(String, unique=True, index=True)
+    added_at = Column(DateTime)
+    updated_at = Column(DateTime)
 
     # Relationships
     tasks_assigned = relationship("Task", foreign_keys="Task.assigned_by_id", back_populates="assigned_by")

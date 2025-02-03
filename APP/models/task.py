@@ -1,8 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text, Date
 from sqlalchemy.orm import relationship, sessionmaker
 #from sqlalchemy.ext.declarative import declarative_base
 from app.database import Base
-from datetime import date
 
 
 #Base = declarative_base()
@@ -12,10 +11,10 @@ from datetime import date
 class Task(Base):
     __tablename__ = "tasks"
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(str)
-    description = Column(str)
-    start_date = date
-    end_date : date
+    title = Column(String)
+    description = Column(String)
+    start_date = Column(Date)
+    end_date = Column(Date)
     assigned_by_id = Column(Integer, ForeignKey("users.id"))
     assigned_to_id = Column(Integer, ForeignKey("users.id"))
 
