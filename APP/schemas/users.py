@@ -8,7 +8,7 @@ class UserBase(BaseModel):
 
 
 class CreateUserRequest(BaseModel):
-    username: str
+    name: str
     password: str
 
 class Token(BaseModel):

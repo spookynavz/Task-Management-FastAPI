@@ -24,23 +24,16 @@ ALGORITHM = "HS256"
 # bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/users/login/")
 
-# class CreateUserRequest(BaseModel):
-#     username: str
-#     password: str
-
-# class Token(BaseModel):
-#     access_token: str
-#     token_type: str
-
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
 @router.post("/", status_code= status.HTTP_201_CREATED)
 async def create_user(db:db_dependency, create_user_request:CreateUserRequest):
-    create_user_model = User(username = create_user_request.username, hashed_password = bcrypt_context.hash(create_user_request.password))
-    db.add()
+    create_user_model = User(name = create_user_request.name, hashed_password = bcrypt_context.hash(create_user_request.password))
+    db.add(create_user_model)
     db.commit()
+    db.refresh(create_user_model)
 
 
 @router.post("/token", response_model = Token)
