@@ -1,66 +1,41 @@
-from typing import Annotated
-from datetime import datetime, timedelta, timezone
-from pydantic import BaseModel
-from jose import JWTError, jwt
-from starlette import status
-from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, APIRouter
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
+from fastapi import Depends, status
 
 from app.database import get_db
-from app.models.user import User
-from app.schemas.users import CreateUserRequest, Token
-from app.utils.auth import bcrypt_context, oauth2_bearer, create_access_token
+from app.dao.auth import create_user, get_user
+from app.utils.auth import create_access_token, verify_password
+from app.schemas.users import (
+    CreateUserRequest, UserLoginRequest,
+    UserRegisterResponse, UserLoginResponse
+)
 
 
-router = APIRouter(prefix='/auth', tags=['auth'])
-
-# Security settings
-SECRET_KEY = "83498230ejdifvnda"
-ALGORITHM = "HS256" 
-
-# # Password hashing
-# bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/users/login/")
+router = APIRouter(prefix='/user', tags=['user'])
 
 
-db_dependency = Annotated[Session, Depends(get_db)]
+@router.post("/register", response_model=UserRegisterResponse)
+def register(user: CreateUserRequest, db: Session = Depends(get_db)):
+    if user.password != user.c_password:
+        raise HTTPException(
+            status_code=400,
+            detail="Password and Confirm Password do not match"
+        )
+    return create_user(db, user)
 
+@router.post("/login", response_model=UserLoginResponse)
+def login(body: UserLoginRequest, db: Session = Depends(get_db)):
+    db_user = get_user(db, body.email)
 
-@router.post("/", status_code= status.HTTP_201_CREATED)
-async def create_user(db:db_dependency, create_user_request:CreateUserRequest):
-    create_user_model = User(name = create_user_request.name, hashed_password = bcrypt_context.hash(create_user_request.password))
-    db.add(create_user_model)
-    db.commit()
-    db.refresh(create_user_model)
+    if db_user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
+    # Verify password
+    if not verify_password(body.password, db_user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-@router.post("/token", response_model = Token)
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    user = authenticate_user(form_data.username, form_data.password, db)
-
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail = "couldnt validate user")
+    # Create JWT token
+    access_token = create_access_token(email=db_user.email, user_id=db_user.id)
     
-    token = create_access_token(user.username, user.id, timedelta(minutes=20))
-
-    return {"access_token":token, "token_type":"bearer"}
-
-
-
-def authenticate_user(username:str, password:str, db):
-    user = db.query(User).filter(User.username==username).first()
-    if not user:
-        return False    
-    if not bcrypt_context.verify(password, user.hashed_password):
-        return False
-    return user
-
-
-# # Token functions
-# def create_access_token(username:str, user_id:int, expires_delta: timedelta):
-#     to_encode = {"sub": username, "id":user_id}
-#     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=20))
-#     to_encode.update({"exp": expire})
-#     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    # Return the token in the response
+    return {"access_token": access_token, "token_type": "bearer"}
