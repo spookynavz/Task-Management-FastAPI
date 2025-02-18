@@ -1,10 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text, Date
-from sqlalchemy.orm import relationship, sessionmaker
-#from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date
+from sqlalchemy.orm import relationship
 from app.database import Base
-
-
-#Base = declarative_base()
 
 
 # Task Model
