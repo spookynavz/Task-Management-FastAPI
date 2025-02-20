@@ -16,3 +16,4 @@ class User(Base):
     # Relationships
     tasks_assigned = relationship("Task", foreign_keys="Task.assigned_by_id", back_populates="assigned_by")
     tasks_received = relationship("Task", foreign_keys="Task.assigned_to_id", back_populates="assigned_to")
+    manager_feedbacks = relationship("Feedback", back_populates="manager")
