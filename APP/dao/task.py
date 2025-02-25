@@ -4,11 +4,15 @@ from app.models.task import Task
 from app.schemas.task import Task as TaskSchema
 
 
-def create_task(db: Session, task_data: TaskSchema):
-    new_task = Task(**task_data.model_dump())
+def create_task(db: Session, **task_data):
+    #print(f"DEBUG: Task Data Before Saving - {task_data}")
+
+    new_task = Task(**task_data)
     db.add(new_task)
-    db.commit()
+    db.commit() 
     db.refresh(new_task)
+    #print(f"DEBUG: Task Saved - ID: {new_task.id}, Assigned By: {new_task.assigned_by_id}")
+
     return new_task
 
 

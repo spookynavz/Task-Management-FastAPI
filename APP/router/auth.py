@@ -4,10 +4,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dao.auth import create_user, get_user
 from app.utils.auth import create_access_token, verify_password
-from app.schemas.users import (
-    CreateUserRequest, UserLoginRequest,
-    UserRegisterResponse, UserLoginResponse
-)
+from app.schemas.users import CreateUserRequest, UserLoginRequest, UserRegisterResponse, UserLoginResponse
+
 
 router = APIRouter(prefix='/user', tags=['user'])
  

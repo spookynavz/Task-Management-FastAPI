@@ -11,7 +11,7 @@ class Task(Base):
     description = Column(String)
     start_date = Column(Date)
     end_date = Column(Date)
-    assigned_by_id = Column(Integer, ForeignKey("users.id"))
+    assigned_by_id = Column(Integer, ForeignKey("users.id"),nullable=False)
     assigned_to_id = Column(Integer, ForeignKey("users.id"))
 
 

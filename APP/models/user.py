@@ -1,15 +1,21 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Enum
+from sqlalchemy.orm import relationship
 from app.database import Base
-from datetime import date
+import enum
 
-# User Model
+class RoleEnum(str, enum.Enum): 
+    ADMIN = "Admin"
+    MANAGER = "Manager"
+    EMPLOYEE = "Employee"
+
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
+    role = Column(Enum(RoleEnum), default=RoleEnum.EMPLOYEE)
     added_at = Column(DateTime)
     updated_at = Column(DateTime)
 
