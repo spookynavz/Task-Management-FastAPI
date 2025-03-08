@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 class Feedback(Base):
-    __tablename__ = "feedback"
+    __tablename__ = "reviewer"
     id= Column(Integer, primary_key=True, index=True)
     task_id = Column(Integer, ForeignKey("tasks.id"))
     manager_id = Column(Integer, ForeignKey("users.id"))

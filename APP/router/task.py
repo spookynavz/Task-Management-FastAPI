@@ -5,14 +5,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db
 from app.schemas.task import Task as TaskSchema
 from app.dao.task import create_task, update_task, delete_task, get_tasks, get_task_by_id
-from app.middlewares.auth import auth_required, manager_required, admin_required, manager_or_admin_required
+from app.middlewares.auth import auth_required, manager_required, admin_required
 
 
 router = APIRouter(prefix='/task', tags=['task'])
 
 
 @router.post("/create", response_model=TaskSchema)
-def creation(task:TaskSchema, db:Session = Depends(get_db), current_user=Depends(manager_or_admin_required)):
+def creation(task:TaskSchema, db:Session = Depends(get_db), current_user=Depends(manager_required)):
     if not current_user:
         raise HTTPException(status_code=401, detail="Authentication required")
 
@@ -50,7 +50,7 @@ def updating(task_id: int, task: TaskSchema, db: Session = Depends(get_db), curr
 
 
 @router.delete("/delete/{task_id}")
-def deletion(task_id: int, db: Session = Depends(get_db), current_user=Depends(manager_or_admin_required)):
+def deletion(task_id: int, db: Session = Depends(get_db), current_user=Depends(manager_required)):
     deleted_task = delete_task(db, task_id)
     if not deleted_task:
         raise HTTPException(status_code=404, detail="Task not found")
